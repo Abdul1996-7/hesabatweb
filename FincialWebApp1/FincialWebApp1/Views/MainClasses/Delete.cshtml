@@ -1,0 +1,135 @@
+﻿@model FinancialWebApp1.Models.MainClass
+
+@{
+    ViewData["Title"] = "حذف البيانات";
+}
+
+<style >
+    .card {
+        background-color: #f9f9f9;
+        border-radius: 6px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        background-color: #f1f1f1;
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
+        
+    }
+
+    .card-title {
+        font-size: 24px;
+        margin: 0;
+       
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        
+    }
+
+    th, td {
+        padding: 8px;
+        text-align: right;
+        border-bottom: 1px solid #ddd;
+        direction:rtl;
+    }
+
+    .form-actions {
+        margin-top: 20px;
+    }
+</style>
+
+
+<div  class="card">
+    <div  clastext-alignrd-header">
+    </div>
+    <div class="card-body">
+        <h5 style="text-align:right">حذف البيانات</h5>
+        <hr />
+
+        <table>
+            <tr>
+                <td>@Html.DisplayFor(model => model.CTnumber)</td>
+                <td>رقم الCT</td>
+            </tr>
+            <tr>
+                
+                <td>@Html.DisplayFor(model => model.CTdate)</td>
+                <td>تاريخ</td>
+            </tr>
+            <tr>
+
+                <td>@Html.DisplayFor(model => model.dateofTravel)</td>
+                <td>تاريخ</td>
+            </tr>
+            <tr>
+               
+                <td>@Html.DisplayFor(model => model.BankListId)</td>
+                <td>المصرف/الفرع</td>
+            </tr>
+            <tr>
+                
+                <td>@Html.DisplayFor(model => model.Amount)</td>
+                <td>المبلغ</td>
+            </tr>
+            <tr>
+               
+                <td>@Html.DisplayFor(model => model.PreparationAuthority)</td>
+                <td>جهة التجهيز</td>
+            </tr>
+            <tr>
+                
+                <td>@Html.DisplayFor(model => model.DateOfAddingbyCutterEmployer)</td>
+                <td>تاريخ قطع</td>
+            </tr>
+            <tr>
+                
+                <td>@Html.DisplayFor(model => model.DepotName)</td>
+                <td>المستودع</td>
+            </tr>
+            <tr>
+                
+                <td>@Html.DisplayFor(model => model.Import)</td>
+                <td>الايراد</td>
+            </tr>
+            <tr>
+               
+                <td>@Html.DisplayFor(model => model.Stamps)</td>
+                <td>مطبوعات</td>
+            </tr>
+            <tr>
+               
+                <td>@Html.DisplayFor(model => model.TransportationLoads)</td>
+                <td>تحميلات</td>
+            </tr>
+            <tr>
+
+                <td>@Html.DisplayFor(model => model.cheackNumber)</td>
+                <td>رقم الصك</td>
+            </tr>
+            <tr>
+
+                <td>@Html.DisplayFor(model => model.cheackDate)</td>
+                <td>تأريخ الصك</td>
+            </tr>
+       
+            
+        </table>
+
+
+
+        <form id="deleteForm" asp-action="Delete">
+            <div style="direction:ltr;text-align:right" class="form-actions">
+                <input type="hidden" asp-for="Id" asp-route-id="@Model.Id" />
+                <button type="button" onclick="confirmDelete()" class="btn btn-danger">حذف</button>
+            <a class="btn btn-secondary" style="float:left" asp-action="Index">الرجوع الى القائمة الرئيسية</a>
+            </div>
+        </form>
+    </div>
+</div>
+

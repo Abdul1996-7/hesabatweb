@@ -1,0 +1,10 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> signInManager;
+@model IEnumerable<FinancialWebApp1.Models.MainClass>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+
+<form asp-controller="MainClasses" asp-action="PermanentlyDelete" method="post">
+    <button type="submit" class="btn btn-danger">Confirm Permanently Delete</button>
+    <a asp-controller="MainClasses" asp-action="DeletedRecords" class="btn btn-secondary">Cancel</a>
+</form>

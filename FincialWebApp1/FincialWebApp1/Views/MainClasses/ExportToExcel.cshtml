@@ -1,0 +1,19 @@
+﻿@model FinancialWebApp1.Models.ExportToExcelViewModel
+
+@using (Html.BeginForm("ExportToExcel", "MainClasses", FormMethod.Post))
+{
+    <div style="direction:rtl">
+        <label for="startDate">من تاريخ </label>
+        @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", type = "date",style = "text-align: right;" })
+    </div>
+
+    <div style="direction:rtl">
+        <label for="endDate">الى تاريخ</label>
+        @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", type = "date",style = "text-align: right;" })
+    </div>
+
+    <div style="display: flex; justify-content:right;">
+        <a class="btn btn-secondary" style="float:left" asp-action="Index">الرجوع الى القائمة الرئيسية</a>
+        <button style="direction: ltr;" type="submit" class="btn btn-primary">تنزيل</button>
+    </div>
+}

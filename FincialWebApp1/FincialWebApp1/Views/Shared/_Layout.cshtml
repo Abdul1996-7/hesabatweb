@@ -1,0 +1,145 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> signInManager;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] -قسم الحسابات</title>
+    <link rel="icon" type="image/x-icon" href="~/favicon_io.ico">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/FincialWebApp1.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css">
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/js/bootstrap.min.js"></script>
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.0/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="~/css/BoostWatch.css" />
+
+    <style>
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .footer {
+            margin-top: auto;
+        }
+            /* Adjust the main content to accommodate the sidebar */
+        .content {
+        }
+    </style>
+
+</head>
+<body class="content">
+    <header>
+       
+        <nav class=" no-print navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/WebImages/OpdcLog.png" alt="our logo" width="60" height="75">
+                </a>
+                <div class="navbar-collapse collapse justify-content-end">
+                    <ul style="direction: rtl;padding-right:1px"  class="navbar-nav">
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            @if (signInManager.IsSignedIn(User) && User.IsInRole("Super Admin"))
+                            {
+
+                                <li style="direction: ltr" class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        إدارة الحسابات
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <li><a class="dropdown-item" href="@Url.Action("ListUsers", "Administrator")">Users</a></li>
+                                        <li><a class="dropdown-item" href="@Url.Action("ListRoles", "Administrator")">Roles</a></li>
+                                        <li style="direction: ltr" class="nav-item">
+                                            <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">
+                                                تسجيل مستخدم جديد
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
+                               
+                                <form style="direction: ltr" method="post" asp-action="logout" asp-controller="account">
+                                   <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                        LogOut @User.Identity.Name
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <li style="direction: rtl" class="nav-item">
+                                    <form method="post" asp-action="logout" asp-controller="account">
+                                        <button type="submit" class="nav-link btn btn-link py-0" style="width:auto">
+                                            LogOut @User.Identity.Name
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                        }
+                       
+                    </ul>
+                </div>
+                <ul class="navbar-nav" style="direction: rtl">
+                    
+                    <li class="nav-item">
+                        <a style="font-size: 23px;" class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">الرئيسية</a>
+                    </li>
+                    <li class="nav-item">
+                        <a style="font-size: 23px;" class="nav-link text-dark" asp-area="" asp-controller="MainClasses" asp-action="Index">الحسابات</a>
+                    </li>
+                   
+                </ul>
+            </div>
+        </nav>
+
+
+    </header>
+    <div>
+        <main role="main" class="pb-3">
+            <link rel="stylesheet" href="~/css/BoostWatch.css" />
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <link rel="stylesheet" href="~/css/print.css" />
+            <partial name="_Notification" />
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer style="margin-top: 3%;" class="border-top no-print">
+        <div style="padding: 15px; background-color: #f9f9f9; display: flex; justify-content: space-between;">
+            <div class="container">
+                <p style="margin-bottom: 0;">&copy; 2023 - OPDC</p>
+            </div>
+            <div style="margin-bottom:0;text-align:right" >
+                <p style="margin-bottom:0;text-align:right">تم اعداد البرنامج بواسطة قسم برمجيات التوزيع والطباعة الرقمية</p>
+                <p style="margin-bottom:0;text-align:right">م.بشار محمود لفتة</p>
+                <p style="margin-bottom:0;text-align:right">م.عبد الفتاح وليد عبداللطيف  </p>
+            </div>
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

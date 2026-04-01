@@ -1,0 +1,792 @@
+﻿@using FinancialWebApp1.Models;
+@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> signInManager;
+@model IEnumerable<FinancialWebApp1.Models.MainClass>
+
+@{
+    ViewData["Title"] = "البيانات";
+}
+
+
+
+<head>
+
+<link rel="stylesheet" href="~/css/MainIndexStyle.css" />
+<link rel="stylesheet" href="~/css/TableStyle.Css" />
+<link rel="stylesheet" href="~/css/print.css" />
+<link rel="stylesheet" href="~/css/Site2.css" />
+
+<style>
+    /* Adjust the size of the content area */
+    .content {
+        min-width:500px;
+        min-height: 500px; /* Set a minimum height for the content area */
+        overflow: auto; /* Add scrollbars if the content exceeds the height */
+    }
+
+        .yellow-row {
+            background-color: yellow; /* Change this to the desired background color */
+        }
+</style>
+</head>
+<body style="display:contents">
+<div class="no-Display on-print">
+    <div>
+    </div>
+    <div  style="text-align:center;font-weight: bold; ">  وزارة النفط </div>
+    <div  style="text-align:center;font-weight: bold;">شركة توزيع المنتجات النفطية/هيأة توزيع بغداد</div>
+    <div  style="text-align:center;font-weight: bold;">تفاصل المبيعات اليومية للزيوت والوقود  </div>
+</div>
+
+
+    <div style="margin-top:2%;">
+    <form class="no-print" style="direction:rtl;padding-bottom:2%" class="form-inline">
+        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
+        {
+            <button class="btn btn-danger" asp-controller="MainClasses" asp-action="DeletedRecords"><i class="bi bi-trash"></i>&nbsp;البيانات المحذوفة</button>
+
+        }
+         @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin") || User.IsInRole("Checking")))
+        {
+            <button class="btn" style="background-color:aqua;" asp-controller="Administrator" asp-action="Track"><i class="bi bi-eye-fill"></i>&nbsp;حركة المستخدمين&nbsp;</button>
+             <button class="btn" style="background-color:crimson;" asp-controller="MainClasses" asp-action="Dashboard"><i class="bi bi-eye-fill"></i>&nbsp;Dashboard &nbsp;</button>
+        }
+        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Epay")))
+            {
+             <button class="btn  btn-success " asp-action="ImportExcel"><i class="bi bi-arrow-bar-up"></i>&nbsp;رفع بيانات  </button>
+            <button class="btn btn-warning " asp-action="Create"><i class="bi bi-bookmark-plus"></i>&nbsp;أضافة جديدة</button>
+            <button class="btn btn-light" asp-controller="BankLists" asp-action="Index"><i class="bi bi-bookmark-plus"></i>&nbsp;المصارف</button>
+
+        }
+            @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Epay") || User.IsInRole("Cutting") || User.IsInRole("Admin") || User.IsInRole("Checking")))
+        {
+        <button class="btn  btn-success " asp-action="ExportToExcel"><i class="bi bi-save"></i>&nbsp; تصدير البيانات </button>
+        <button id="printButton" onclick="printPage()" class="btn btn-primary"><i class="bi bi-printer-fill"></i> &nbsp;طباعة  </button>
+        <button class="btn btn-secondary  "><i class="bi bi-arrow-repeat"></i>&nbsp; Refresh </button>
+        }
+    </form>
+</div>
+   
+<div class="row justify-content-start mt-3 no-print">
+    <div class="col-md-12">
+        @using (Html.BeginForm("Index", "MainClasses", FormMethod.Get))
+        {
+            <div style="float:right">
+                <button class="btn btn-info" type="submit"><i class="bi bi-search"></i>بحث</button>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <input class="form-control" style="text-align:right;" type="text" name="SearchPreparationAuthority" placeholder="بحث عن جهة التجهيز" value="@ViewBag.SearchPreparationAuthority" />
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input class="form-control" style="text-align:right;" type="text" name="SearchBankName" placeholder="بحث عن اسم البنك" value="@ViewBag.SearchBankName" />
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input class="form-control" style="text-align:right;" type="text" name="SearchCTNum" placeholder="بحث عن رقم ال (CT)" value="@ViewBag.SearchCTNum" />
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input class="form-control" style="text-align:right;" type="text" name="SearchDepotName" placeholder="بحث عن اسم المستودع" value="@ViewBag.SearchDepotName" />
+                </div>
+                    @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Checking")))
+                    {
+                        <label>
+                            <input type="checkbox" name="IsCheacked" value="true" @(ViewBag.IsCheacked ? "checked" : "") /> تم التدقيق
+                        </label>
+                    }
+                   
+            </div>
+
+            <div>
+                <div style="display: flex; align-items: center; float:right">
+                    @Html.TextBox("endDateCT", ViewBag.EndDate as string, new { @type = "date", style = "width: 150px; margin-right: 10px; border: 2px solid #ddd; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);", placeholder = "الى تاريخ " + (ViewBag.SearchCTDate ?? string.Empty) })
+                    <label for="endDate" style="margin-right: 10px; font-weight: bold; color: #333;">:(CT) الى تاريخ</label>
+
+                    @Html.TextBox("startDateCT", ViewBag.StartDate as string, new { @type = "date", style = "width: 150px; margin-right: 10px; border: 2px solid #ddd; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);", placeholder = "من تاريخ " + (ViewBag.SearchCTDate ?? string.Empty) })
+                        <label for="startDate" style="margin-right: 10px; font-weight: bold; color: #333;">:(CT) من تاريخ</label>
+                </div>
+            </div>
+                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Epay")))
+                {
+                <div>
+                    <div style="display: flex; align-items: center; float:right">
+                        @Html.TextBox("endDate", ViewBag.EndDate as string, new { @type = "date", style = "width: 150px; margin-right: 10px; border: 2px solid #ddd; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);", placeholder = "الى تاريخ " + (ViewBag.SearchCTDate ?? string.Empty) })
+                            <label for="endDate" style="margin-right: 10px; font-weight: bold; color: #333;">:  (الترحيل)الى تاريخ </label>
+
+                        @Html.TextBox("startDate", ViewBag.StartDate as string, new { @type = "date", style = "width: 150px; margin-right: 10px; border: 2px solid #ddd; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);", placeholder = "من تاريخ " + (ViewBag.SearchCTDate ?? string.Empty) })
+                            <label for="startDate" style="margin-right: 10px; font-weight: bold; color: #333;">: (الترحيل)من تاريخ </label>
+                    </div>
+                </div>
+                }
+                <div>
+                    @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Checking")))
+                    {
+                        <div style="display: flex; align-items: center; float:right">
+                            @Html.TextBox("endDateCheack", ViewBag.EndDate as string, new { @type = "date", style = "width: 150px; margin-right: 10px; border: 2px solid #ddd; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);", placeholder = "الى تاريخ " + (ViewBag.SearchCTDate ?? string.Empty) })
+                            <label for="endDateCheack" style="margin-right: 10px; font-weight: bold; color: #333;">:  (تدقيق)الى تاريخ </label>
+
+                            @Html.TextBox("startDateCheack", ViewBag.StartDate as string, new { @type = "date", style = "width: 150px; margin-right: 10px; border: 2px solid #ddd; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);", placeholder = "من تاريخ " + (ViewBag.SearchCTDate ?? string.Empty) })
+                            <label for="starDateCheack" style="margin-right: 10px; font-weight: bold; color: #333;">: (تدقيق)من تاريخ </label>
+                        </div>
+                    }
+                    
+                </div>
+
+            }
+    </div>
+</div>
+<div style="float:right" class="print-onpaper">
+    <div class="row">
+        <div class=" text-right">
+            <p style="text-align:right"> المستودع/&nbsp @ViewBag.SearchDepotName </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class=" text-right">
+            <p style="text-align:right"> التاريخ/&nbsp @DateTime.Now.ToString("dd/MM/yyyy") </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="text-right">
+            <p style="text-align:right "> اليوم/&nbsp  @DateTime.Now.ToString("dddd", new System.Globalization.CultureInfo("ar-AE")) </p>
+        </div>
+    </div>
+</div>
+
+
+<div class="tg-sihp-printon-print print-onpaper " style="height: 100%; width:100%;direction: rtl; text-align: left; overflow: auto;">
+    @{
+    Pager pager = new Pager();
+
+    int pageN0 = 0;
+    int startPage = Math.Max(ViewBag.Pager.CurrentPage - 2, 1);
+    int endPage = Math.Min(ViewBag.Pager.CurrentPage + 2, ViewBag.Pager.TotalPages);
+
+
+    @if (ViewBag.Pager.CurrentPage > 1)
+    {
+        @Html.ActionLink("First", "Index", new { pg = 1, /* other parameters */ }) <span></span>
+        @Html.ActionLink("Prev", "Index", new { pg = ViewBag.Pager.CurrentPage - 1, /* other parameters */ })
+
+        <span></span>
+    }
+
+    for (int i = startPage; i <= endPage; i++)
+    {
+        if (i == ViewBag.Pager.CurrentPage)
+        {
+            @:<text>@i</text>
+        }
+        else
+        {
+            @Html.ActionLink(i.ToString(), "Index", new {
+           pg = i,
+           SearchCTNum = ViewBag.SearchCTNum,
+           SearchBankName = ViewBag.SearchBankName,
+           SearchPreparationAuthority = ViewBag.SearchPreparationAuthority,
+           SearchDepotName = ViewBag.SearchDepotName,
+           SearchFormCuttingNumber = ViewBag.SearchFormCuttingNumber,
+           SearchProductType = ViewBag.SearchProductType,
+           SearchCutAmount = ViewBag.SearchCutAmount,
+           startDateCT = ViewBag.startDateCT,
+           endDateCT = ViewBag.endDateCT,
+           startDate = ViewBag.startDate,
+           endDate = ViewBag.endDate,
+           startDateCheack = ViewBag.startDateCheack,
+           endDateCheack = ViewBag.endDateCheack,
+           IsCheacked = ViewBag.IsCheacked
+           /* other parameters */
+       })
+
+            <span></span>
+        }
+    }
+
+    @if (ViewBag.Pager.CurrentPage < ViewBag.Pager.TotalPages)
+    {
+        @Html.ActionLink("Next", "Index", new { pg = ViewBag.Pager.CurrentPage + 1, /* other parameters */ })
+
+        <span></span>
+        @Html.ActionLink("Last", "Index", new { pg = ViewBag.Pager.TotalPages, /* other parameters */ })
+
+        <span></span>
+    }
+
+
+    }
+    <table class="table-container tg-sihp-printon-print print-table">
+        
+        <thead>
+            <tr>
+                    <th class="tg-sihp-print">
+                        ت
+                    </th>
+
+
+                   
+                    @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin") || User.IsInRole("Epay")))
+                    {
+                        
+
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.CTnumber)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.CTdate)
+                        </th>
+                        <th class="tg-sihp-print no-print">
+                            @Html.DisplayNameFor(model => model.dateofTravel)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.BankList.Name)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.Amount)
+                        </th>
+
+                        <th class="tg-sihp-print ">
+                            @Html.DisplayNameFor(model => model.A)
+                        </th>
+
+                        
+
+                    }
+               
+                    @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin") || User.IsInRole("Cutting")))
+                    {
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.DepotName)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.cheackNumber)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.cheackDate)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.PreparationAuthority)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.DateOfAddingbyCutterEmployer)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.Import)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.Stamps)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.TransportationLoads)
+                        </th>
+                   
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.LeftAmount)
+                        </th>
+                        <th class="tg-sihp-print  ">
+                            @Html.DisplayNameFor(model => model.B)
+                        </th>
+
+        
+                    }
+                    @if (signInManager.IsSignedIn(User) && ( User.IsInRole("Checking")))
+                    {
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.CTnumber)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.CTdate)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.BankList.Name)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.Amount)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.DepotName)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.cheackNumber)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.cheackDate)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.PreparationAuthority)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.LeftAmount)
+                        </th>
+                        
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.Ischecked)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.checkDate)
+                        </th>
+                        <th class="tg-sihp-print  ">
+                            @Html.DisplayNameFor(model => model.C)
+                        </th>
+                    }
+                    @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
+                    {
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.Ischecked)
+                        </th>
+                        <th class="tg-sihp-print">
+                            @Html.DisplayNameFor(model => model.checkDate)
+                        </th>
+                        <th class="tg-sihp-print  ">
+                            @Html.DisplayNameFor(model => model.C)
+                        </th>
+                    }
+
+                 
+                <th hidden class="no-print">
+                    @Html.DisplayNameFor(model => model.WhoEdit)
+                </th>
+                <th hidden class="no-print">
+                    @Html.DisplayNameFor(model => model.DateOfEdit)
+                </th>
+                    <th hidden class="no-print">
+                    @Html.DisplayNameFor(model => model.CreatedBy)
+                </th>
+                <th hidden class="no-print">
+                    @Html.DisplayNameFor(model => model.DateCreated)
+                </th>
+                    <th class="no-print"></th>
+                
+            </tr>
+        </thead>
+            <tbody>
+                @{
+                    var count = 1;
+                }
+                @foreach (var item in Model)
+                {
+
+                    <tr class="@(item.Ischecked ? "pink-row" : "")">
+
+                        <td class="unchecked">
+                            @count
+                        </td>
+
+
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin") || User.IsInRole("Epay")))
+                        {
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.CTnumber)
+                            </td>
+                            <td class="tg-sihp-printt">
+                                @Html.DisplayFor(modelItem => item.CTdate)
+                            </td>
+                            <td class="tg-sihp-printt no-print">
+                                @Html.DisplayFor(modelItem => item.dateofTravel)
+                            </td>
+                            <td class="tg-sihp-print">
+                                @Html.DisplayFor(modelItem => item.BankList.Name)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                           
+                            <td style="max-width:30px;word-wrap: break-word;" class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.A)
+                            </td>
+                        }
+
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin") || User.IsInRole("Cutting")))
+                        {
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.CTnumber)
+                            </td>
+                            <td class="tg-sihp-printt">
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td class="tg-sihp-printt">
+                                @Html.DisplayFor(modelItem => item.CTdate)
+                            </td>
+                            <td class="tg-sihp-print">
+                                @Html.DisplayFor(modelItem => item.BankList.Name)
+                            </td>
+
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.PreparationAuthority)
+                            </td>
+                            <td class="tg-sihp-print no-print ">
+                                @Html.DisplayFor(modelItem => item.DepotName)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.Stamps)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.TransportationLoads)
+                            </td>
+
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.Import)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.cheackNumber)
+                            </td>
+                          
+                            <td class="tg-sihp-print ">
+
+                                @if (item.LeftAmount > item.Amount)
+                                {
+                                    <p>غير مطابق</p>
+                                }
+
+                                @Html.DisplayFor(modelItem => item.LeftAmount)
+                            </td>
+
+                            
+                            <td class="tg-sihp-print no-print ">
+                                @Html.DisplayFor(modelItem => item.DateOfAddingbyCutterEmployer)
+                            </td>
+                            <td class="tg-sihp-print no-print">
+                                @Html.DisplayFor(modelItem => item.B)
+                            </td>
+
+                        }
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Checking")))
+                        {
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.CTnumber)
+                            </td>
+                            <td class="tg-sihp-printt">
+                                @Html.DisplayFor(modelItem => item.CTdate)
+                            </td>
+                            <td class="tg-sihp-print">
+                                @Html.DisplayFor(modelItem => item.BankList.Name)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.DepotName)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.cheackNumber)
+                            </td>
+
+
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.PreparationAuthority)
+                            </td>
+
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.LeftAmount)
+                            </td>
+
+                            <td class="tg-sihp-print ">
+                                @if (item.Ischecked == true)
+                                {
+                                    <p>لقد تم التدقيق</p>
+                                }
+                                else
+                                {
+                                    <p>لم  تدقيق</p>
+                                }
+                            </td>
+
+
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.C)
+                            </td>
+                        }
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
+                        {
+                            <td class="tg-sihp-print ">
+                                @if (item.Ischecked == true)
+                                {
+                                    <p>لقد تم التدقيق</p>
+                                }
+                                else
+                                {
+                                    <p>لم  تدقق</p>
+                                }
+                            </td>
+
+                            <td class="tg-sihp-print">
+                                @Html.DisplayFor(modelItem => item.checkDate)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.C)
+                            </td>
+
+                        }
+
+                        <td hidden class="no-print ">
+                            @Html.DisplayFor(modelItem => item.WhoEdit)
+                        </td>
+                        <td hidden class="no-print cell">
+                            @Html.DisplayFor(modelItem => item.DateOfEdit)
+                        </td>
+                        <td hidden class="no-print">
+                            @Html.DisplayFor(modelItem => item.CreatedBy)
+                        </td>
+                        <td hidden class="no-print cell">
+                            @Html.DisplayFor(modelItem => item.DateCreated)
+                        </td>
+                        <td class="no-print">
+                            <div class="button-container no-print">
+                                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Epay") || User.IsInRole("Cutting") || User.IsInRole("Super Admin") || User.IsInRole("Checking")))
+                                {
+                                    <form asp-action="Edit" asp-route-id="@item.Id" method="get">
+                                        <button type="submit" class="btn btn-success">تعديل</button>
+                                    </form>
+                                }
+                                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+                                {
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="get">
+                                        <button type="submit" class="btn btn-danger">حذف</button>
+                                    </form>
+                                }
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    count++;
+                }
+            </tbody>
+            <tbody>
+         
+            @foreach (var item in Model)
+            {
+                
+                    <tr @((item.dateofTravel != null) ? "yellow-row" : "")>
+                    <td>
+                    </td>
+
+
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin") || User.IsInRole("Epay")))
+                        {
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.CTnumber)
+                            </td>
+                            <td class="tg-sihp-printt">
+                                @Html.DisplayFor(modelItem => item.CTdate)
+                            </td>
+                            <td class="tg-sihp-printt no-print">
+                                @Html.DisplayFor(modelItem => item.dateofTravel)
+                            </td>
+                            <td class="tg-sihp-print">
+                                @Html.DisplayFor(modelItem => item.BankList.Name)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td style="max-width:30px;word-wrap: break-word;" class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.A)
+                            </td>
+                        }
+
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin") || User.IsInRole("Cutting")))
+                        {
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.DepotName)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.cheackNumber)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.cheackDate)
+                            </td>
+
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.PreparationAuthority)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.DateOfAddingbyCutterEmployer)
+                            </td>
+
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.Import)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.Stamps)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.TransportationLoads)
+                            </td>
+                         
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.LeftAmount)
+                            </td>
+                            <td class="tg-sihp-print   ">
+                                @Html.DisplayFor(modelItem => item.B)
+                            </td>
+                            
+                        
+                        }
+
+
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Checking")))
+                        {
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.CTnumber)
+                            </td>
+                            <td class="tg-sihp-printt">
+                                @Html.DisplayFor(modelItem => item.CTdate)
+                            </td>
+                            <td class="tg-sihp-print">
+                                @Html.DisplayFor(modelItem => item.BankList.Name)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.Amount)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.DepotName)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.cheackNumber)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.cheackDate)
+                            </td>
+
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.PreparationAuthority)
+                            </td>
+                          
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.LeftAmount)
+                            </td>
+                            
+                            <td>
+                                <input style="height:fit-content;width:fit-content" type="checkbox" class="toggle-checkbox" data-id="@item.Id" @(item.Ischecked ? "checked" : "") />
+                            </td>
+                            <td class="tg-sihp-print">
+                                @Html.DisplayFor(modelItem => item.checkDate)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.C)
+                            </td>
+                        }
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
+                        {
+                            <td>
+                                <input style="height:fit-content;width:fit-content" type="checkbox" class="toggle-checkbox" data-id="@item.Id" @(item.Ischecked ? "checked" : "") />
+                            </td>
+                            <td class="tg-sihp-print">
+                                @Html.DisplayFor(modelItem => item.checkDate)
+                            </td>
+                            <td class="tg-sihp-print ">
+                                @Html.DisplayFor(modelItem => item.C)
+                            </td>
+                        }
+                                   
+                    <td hidden class="no-print ">
+                    @Html.DisplayFor(modelItem => item.WhoEdit)
+                    </td>
+                        <td hidden class="no-print cell">
+                        @Html.DisplayFor(modelItem => item.DateOfEdit)
+                    </td>
+                        <td hidden class="no-print">
+                        @Html.DisplayFor(modelItem => item.CreatedBy)
+                    </td>
+                    <td hidden class="no-print cell">
+                        @Html.DisplayFor(modelItem => item.DateCreated)
+                    </td>
+                    <td class="no-print">
+                        <div class="button-container no-print">
+                                @if (signInManager.IsSignedIn(User) && (User.IsInRole("Epay") || User.IsInRole("Cutting") || User.IsInRole("Super Admin") || User.IsInRole("Checking")))
+                                {
+                                <form asp-action="Edit" asp-route-id="@item.Id" method="get">
+                                    <button type="submit" class="btn btn-success">تعديل</button>
+                                </form>
+                                }
+                            @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+                            {
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="get">
+                                    <button type="submit" class="btn btn-danger">حذف</button>
+                                </form>
+                            }
+                            
+                            </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+            @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin") || User.IsInRole("Cutting") || User.IsInRole("Checking")))
+            {
+                <tr class="no-counter" lang="ar">
+                    <td colspan="1" class="tg-p7nt tg-p7nt-print">
+
+                    </td>
+                    <td colspan="2" class="tg-p7nt tg-p7nt-print">
+                        مجموع المبلغ المتبقي: @(
+                    Model.Sum(i => i.LeftAmount)
+                    )
+                    </td>
+                    <td colspan="2" class="tg-p7nt tg-p7nt-print">
+                        مجموع الايرادات: @(
+                    Model.Sum(i => i.Import)
+                    )
+                    </td>
+                    <td colspan="2" class="tg-p7nt tg-p7nt-print">
+                        مجموع المطبوعات: @(
+                    Model.Sum(i => i.Stamps)
+                    )
+                    </td>
+                <td colspan="3" class="tg-p7nt tg-p7nt-print">
+                    مجموع التحميلات: @(Model.Sum(i => i.TransportationLoads))
+                </td>
+
+        </tr>
+        }
+    </table>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function () {
+                // Toggle checkboxes based on server data
+                $(".toggle-checkbox").each(function () {
+                    var itemId = $(this).data("id");
+                    var isChecked = $(this).data("ischecked");
+
+                    if (isChecked) {
+                        $(this).prop("checked", true);
+                    }
+                });
+
+                // Handle checkbox changes
+                $(".toggle-checkbox").change(function () {
+                    var itemId = $(this).data("id");
+                    var isChecked = $(this).prop("checked");
+
+                    // Send AJAX request to update server
+                    $.ajax({
+                        type: "POST",
+                        url: "/MainClasses/UpdateBoolean",
+                        data: { id: itemId, isChecked: isChecked },
+                        success: function (data) {
+                            // Update checkbox state based on server response
+                            if (data.success) {
+                                // Update the checkbox state
+                                $(".toggle-checkbox[data-id='" + itemId + "']").prop("checked", isChecked);
+                            } else {
+                                // Handle error scenario if needed
+                            }
+                        },
+                        error: function () {
+                            // Handle error if needed
+                        }
+                    });
+                });
+            });
+        </script>
+</div>
+  
+
+
+
+<div class="no-print" style="float:right">
+    <partial name="pager" model="@pager" />
+</div>
+</body>
+

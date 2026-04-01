@@ -1,0 +1,591 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> signInManager;
+@model FinancialWebApp1.Models.MainClass
+
+@{
+    ViewData["Title"] = "تعديل البياتات";
+}
+
+<h1 style="text-align:center">تعديل البياتات</h1>
+
+<hr />
+<style>
+    .column {
+        float: right;
+        width: 100%;
+        padding: 10px;
+        margin-top: 5%;
+        background-color: #f2f2f2;
+    }
+
+    .row:after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+</style>
+
+<div class="column" style="direction:rtl" class="row">
+    <form id="editForm" asp-action="Edit">
+
+        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin") || User.IsInRole("Admin")))
+        {
+
+            @*    الدفع الالكتروني  *@
+
+            <div class="form-group">
+                <label asp-for="CTnumber" class="control-label"></label>
+                <input  asp-for="CTnumber" class="form-control" />
+                <span asp-validation-for="CTnumber" class="text-danger"></span>
+            </div>
+         
+            <div class="form-group">
+                <label  asp-for="dateofTravel" class="control-label"></label>
+                <input asp-for="dateofTravel" class="form-control" />                <span asp-validation-for="dateofTravel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BankListId" class="control-label">اسم البنك</label>
+                <select asp-for="BankListId" class="form-control" asp-items="ViewBag.BankListId">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                <label asp-for="A" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="A" class="form-control"></textarea>
+                <span asp-validation-for="A" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="WhoEdit" class="control-label"></label>
+                <input asp-for="WhoEdit" class="form-control" />
+                <span asp-validation-for="WhoEdit" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateOfEdit" class="control-label"></label>
+                <input asp-for="DateOfEdit" class="form-control" />
+                <span asp-validation-for="DateOfEdit" class="text-danger"></span>
+            </div>
+
+            @*     قطع الصندوق  *@
+
+            <div  class="form-group">
+                <label asp-for="PreparationAuthority" class="control-label"></label>
+                <input asp-for="PreparationAuthority" class="form-control" />
+                <span asp-validation-for="PreparationAuthority" class="text-danger"></span>
+            </div>
+            <div  class="form-group">
+                <label asp-for="DateOfAddingbyCutterEmployer" class="control-label"></label>
+                <input asp-for="DateOfAddingbyCutterEmployer" style="text-align:right" class="form-control" />
+                <span asp-validation-for="DateOfAddingbyCutterEmployer" class="text-danger"></span>
+            </div>
+            <div  class="form-group">
+                <label asp-for="DepotName" class="control-label"></label>
+                <input asp-for="DepotName" class="form-control" />
+                <span asp-validation-for="DepotName" class="text-danger"></span>
+            </div>
+            <div  class="form-group">
+                <label asp-for="Import" class="control-label"></label>
+                <input asp-for="Import" class="form-control" />
+                <span asp-validation-for="Import" class="text-danger"></span>
+            </div>
+            <div  class="form-group">
+                <label asp-for="Stamps" class="control-label"></label>
+                <input asp-for="Stamps" class="form-control" />
+                <span asp-validation-for="Stamps" class="text-danger"></span>
+            </div>
+            <div  class="form-group">
+                <label asp-for="TransportationLoads" class="control-label"></label>
+                <input asp-for="TransportationLoads" class="form-control" />
+                <span asp-validation-for="TransportationLoads" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="cheackNumber" class="control-label"></label>
+                <input asp-for="cheackNumber" class="form-control" />
+                <span asp-validation-for="cheackNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="cheackDate" class="control-label"></label>
+                <input asp-for="cheackDate" class="form-control" />
+                <span asp-validation-for="cheackDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="B" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="B" class="form-control"></textarea>
+                <span asp-validation-for="B" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="C" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="C" class="form-control"></textarea>
+                <span asp-validation-for="C" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="checkDate" class="control-label"></label>
+                <input asp-for="checkDate" class="form-control" />
+                <span asp-validation-for="checkDate" class="text-danger"></span>
+            </div>
+
+            <div hidden class="form-group">
+                <label asp-for="CreatedBy" class="control-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateCreated" class="control-label"></label>
+                <input asp-for="DateCreated" class="form-control" />
+                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            </div>
+           
+            @if (ViewBag.RelatedData != null)
+            {
+                <table style="background-color:beige" class="table">
+                    <thead>
+                        <tr>
+                            <th>CTرقم ال</th>
+                            <th>المصرف/الفرع</th>
+                            <th>التأريخ</th>
+                            <th>المبلغ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var relatedData in ViewBag.RelatedData)
+                        {
+                            <tr>
+                                <td>@relatedData.CTnumber</td>
+                                <td>@relatedData.BankName</td>
+                                <td>@relatedData.CTdate</td>
+                                <td>@relatedData.Amount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+        @if (signInManager.IsSignedIn(User) &&  User.IsInRole("Epay"))
+            {
+
+            @*    الدفع الالكتروني  *@
+
+            <div class="form-group">
+                <label asp-for="CTnumber" class="control-label"></label>
+                <input asp-for="CTnumber" class="form-control" />
+                <span asp-validation-for="CTnumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="dateofTravel" class="control-label"></label>
+                <input value="@DateTime.Today.ToString("yyyy-MM-dd")" data-val-date="@DateTime.Today.ToString("yyyy-MM-dd")" style="text-align:right" class="form-control" />
+                <span asp-validation-for="dateofTravel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BankListId" class="control-label">اسم البنك</label>
+                <select asp-for="BankListId" class="form-control" asp-items="ViewBag.BankListId">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="A" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="A" class="form-control"></textarea>
+                <span asp-validation-for="A" class="text-danger"></span>
+            </div>
+              <div hidden class="form-group">
+                <label asp-for="WhoEdit" class="control-label"></label>
+                <input asp-for="WhoEdit" class="form-control" />
+                <span asp-validation-for="WhoEdit" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateOfEdit" class="control-label"></label>
+                <input asp-for="DateOfEdit" class="form-control" />
+                <span asp-validation-for="DateOfEdit" class="text-danger"></span>
+            </div>
+
+            @*     قطع الصندوق  *@
+
+            <div hidden class="form-group">
+                <label  asp-for="PreparationAuthority" class="control-label"></label>
+                <input asp-for="PreparationAuthority" class="form-control" />
+                <span asp-validation-for="PreparationAuthority" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateOfAddingbyCutterEmployer" class="control-label"></label>
+                <input style="te" asp-for="DateOfAddingbyCutterEmployer" class="form-control" />
+                <span asp-validation-for="DateOfAddingbyCutterEmployer" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DepotName" class="control-label"></label>
+                <input asp-for="DepotName" class="form-control" />
+                <span asp-validation-for="DepotName" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="Import" class="control-label"></label>
+                <input asp-for="Import" class="form-control" />
+                <span asp-validation-for="Import" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="Stamps" class="control-label"></label>
+                <input asp-for="Stamps" class="form-control" />
+                <span asp-validation-for="Stamps" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="TransportationLoads" class="control-label"></label>
+                <input asp-for="TransportationLoads" class="form-control" />
+                <span asp-validation-for="TransportationLoads" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="cheackNumber" class="control-label"></label>
+                <input asp-for="cheackNumber" class="form-control" />
+                <span asp-validation-for="cheackNumber" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="cheackDate" class="control-label"></label>
+                <input asp-for="cheackDate" class="form-control" />
+                <span asp-validation-for="cheackDate" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="B" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="B" class="form-control"></textarea>
+                <span asp-validation-for="B" class="text-danger"></span>
+            </div>
+            
+             <div hidden class="form-group">
+                <label asp-for="CreatedBy" class="control-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateCreated" class="control-label"></label>
+                <input asp-for="DateCreated" class="form-control" />
+                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="checkDate" class="control-label"></label>
+                <input asp-for="checkDate" class="form-control" />
+                <span asp-validation-for="checkDate" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="C" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="C" class="form-control"></textarea>
+                <span asp-validation-for="C" class="text-danger"></span>
+            </div>
+            @if (ViewBag.RelatedData != null)
+            {
+                <table style="background-color:beige" class="table">
+                    <thead>
+                        <tr>
+                            <th>CTرقم ال</th>
+                            <th>المصرف/الفرع</th>
+                            <th>التأريخ</th>
+                            <th>المبلغ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var relatedData in ViewBag.RelatedData)
+                        {
+                            <tr>
+                                <td>@relatedData.CTnumber</td>
+                                <td>@relatedData.BankName</td>
+                                <td>@relatedData.CTdate</td>
+                                <td>@relatedData.Amount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        }
+
+        @if (signInManager.IsSignedIn(User) && User.IsInRole("Checking"))
+        {
+            @*    الدفع الالكتروني  *@
+
+            <div hidden class="form-group">
+                <label asp-for="CTnumber" class="control-label"></label>
+                <input asp-for="CTnumber" class="form-control" />
+                <span asp-validation-for="CTnumber" class="text-danger"></span>
+            </div>
+
+            <div hidden class="form-group">
+                <label asp-for="dateofTravel" class="control-label"></label>
+                <input asp-for="dateofTravel" class="form-control" />
+                <span asp-validation-for="dateofTravel" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="BankListId" class="control-label">اسم البنك</label>
+                <select asp-for="BankListId" class="form-control" asp-items="ViewBag.BankListId">
+                </select>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="A" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="A" class="form-control"></textarea>
+                <span asp-validation-for="A" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="WhoEdit" class="control-label"></label>
+                <input asp-for="WhoEdit" class="form-control" />
+                <span asp-validation-for="WhoEdit" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateOfEdit" class="control-label"></label>
+                <input asp-for="DateOfEdit" class="form-control" />
+                <span asp-validation-for="DateOfEdit" class="text-danger"></span>
+            </div>
+
+            @*     قطع الصندوق  *@
+
+            <div hidden class="form-group">
+                <label asp-for="PreparationAuthority" class="control-label"></label>
+                <input asp-for="PreparationAuthority" class="form-control" />
+                <span asp-validation-for="PreparationAuthority" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateOfAddingbyCutterEmployer" class="control-label"></label>
+                <input asp-for="DateOfAddingbyCutterEmployer" style="text-align:right" class="form-control" />
+                <span asp-validation-for="DateOfAddingbyCutterEmployer" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DepotName" class="control-label"></label>
+                <input asp-for="DepotName" class="form-control" />
+                <span asp-validation-for="DepotName" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="Import" class="control-label"></label>
+                <input asp-for="Import" class="form-control" />
+                <span asp-validation-for="Import" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="Stamps" class="control-label"></label>
+                <input asp-for="Stamps" class="form-control" />
+                <span asp-validation-for="Stamps" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="TransportationLoads" class="control-label"></label>
+                <input asp-for="TransportationLoads" class="form-control" />
+                <span asp-validation-for="TransportationLoads" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="cheackNumber" class="control-label"></label>
+                <input asp-for="cheackNumber" class="form-control" />
+                <span asp-validation-for="cheackNumber" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="cheackDate" class="control-label"></label>
+                <input asp-for="cheackDate" class="form-control" />
+                <span asp-validation-for="cheackDate" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="B" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="B" class="form-control"></textarea>
+                <span asp-validation-for="B" class="text-danger"></span>
+            </div>
+           
+            <div  class="form-group">
+                <label asp-for="checkDate" class="control-label"></label>
+                <input asp-for="checkDate" class="form-control" />
+                <span asp-validation-for="checkDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="C" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="C" class="form-control"></textarea>
+                <span asp-validation-for="C" class="text-danger"></span>
+            </div>
+
+            <div hidden class="form-group">
+                <label asp-for="CreatedBy" class="control-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateCreated" class="control-label"></label>
+                <input asp-for="DateCreated" class="form-control" />
+                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            </div>
+
+            @if (ViewBag.RelatedData != null)
+            {
+                <table style="background-color:beige" class="table">
+                    <thead>
+                        <tr>
+                            <th>CTرقم ال</th>
+                            <th>المصرف/الفرع</th>
+                            <th>التأريخ</th>
+                            <th>المبلغ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var relatedData in ViewBag.RelatedData)
+                        {
+                            <tr>
+                                <td>@relatedData.CTnumber</td>
+                                <td>@relatedData.BankName</td>
+                                <td>@relatedData.CTdate</td>
+                                <td>@relatedData.Amount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+           
+           
+        }
+
+        @if (signInManager.IsSignedIn(User) &&  User.IsInRole("Cutting"))
+        {
+            @*     قطع الصندوق  *@
+            <div class="form-group">
+                <label asp-for="PreparationAuthority" class="control-label"></label>
+                <input asp-for="PreparationAuthority" class="form-control" />
+                <span asp-validation-for="PreparationAuthority" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateOfAddingbyCutterEmployer" class="control-label"></label>
+                <input style="te" asp-for="DateOfAddingbyCutterEmployer" class="form-control" />
+                <span asp-validation-for="DateOfAddingbyCutterEmployer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DepotName" class="control-label"></label>
+                <input asp-for="DepotName" class="form-control" />
+                <span asp-validation-for="DepotName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Import" class="control-label"></label>
+                <input asp-for="Import" class="form-control" />
+                <span asp-validation-for="Import" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Stamps" class="control-label"></label>
+                <input asp-for="Stamps" class="form-control" />
+                <span asp-validation-for="Stamps" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TransportationLoads" class="control-label"></label>
+                <input asp-for="TransportationLoads" class="form-control" />
+                <span asp-validation-for="TransportationLoads" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="cheackNumber" class="control-label"></label>
+                <input asp-for="cheackNumber" class="form-control" />
+                <span asp-validation-for="cheackNumber" class="text-danger"></span>
+            </div>
+            <div  class="form-group">
+                <label asp-for="cheackDate" class="control-label"></label>
+                <input asp-for="cheackDate" class="form-control" />
+                <span asp-validation-for="cheackDate" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="C" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="C" class="form-control"></textarea>
+                <span asp-validation-for="C" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="B" class="control-label"></label>
+                <textarea style="width:50%;height:50%;" asp-for="B" class="form-control"></textarea>
+                <span asp-validation-for="B" class="text-danger"></span>
+            </div>
+         
+
+            @*  الدفع الالكتروني  *@
+
+            <div hidden class="form-group">
+                <label asp-for="CTnumber" class="control-label"></label>
+                <input asp-for="CTnumber" class="form-control" />
+                <span asp-validation-for="CTnumber" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="dateofTravel" class="control-label"></label>
+                <input asp-for="dateofTravel" class="form-control" />
+                <span asp-validation-for="dateofTravel" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="BankListId" class="control-label"></label>
+                <select asp-for="BankListId" class="form-control" asp-items="ViewBag.BankListId">
+                    <option disabled selected value="">اختار اسم البنك</option>
+                </select>               
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="A" class="control-label"></label>
+                <input asp-for="A" class="form-control" />
+                <span asp-validation-for="A" class="text-danger"></span>
+            </div>
+
+
+            <div hidden class="form-group">
+                <label asp-for="WhoEdit" class="control-label"></label>
+                <input asp-for="WhoEdit" class="form-control" />
+                <span asp-validation-for="WhoEdit" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateOfEdit" class="control-label"></label>
+                <input asp-for="DateOfEdit" class="form-control" />
+                <span asp-validation-for="DateOfEdit" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="CreatedBy" class="control-label"></label>
+                <input asp-for="CreatedBy" class="form-control" />
+                <span asp-validation-for="CreatedBy" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="DateCreated" class="control-label"></label>
+                <input asp-for="DateCreated" class="form-control" />
+                <span asp-validation-for="DateCreated" class="text-danger"></span>
+            </div>
+            <div hidden class="form-group">
+                <label asp-for="checkDate" class="control-label"></label>
+                <input asp-for="checkDate" class="form-control" />
+                <span asp-validation-for="checkDate" class="text-danger"></span>
+            </div>
+            @if (ViewBag.RelatedData != null)
+            {
+                <table style="background-color:beige" class="table">
+                    <thead>
+                        <tr>
+                            <th>CTرقم ال</th>
+                            <th>المصرف/الفرع</th>
+                            <th>التأريخ</th>
+                            <th>المبلغ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var relatedData in ViewBag.RelatedData)
+                        {
+                            <tr>
+                                <td>@relatedData.CTnumber</td>
+                                <td>@relatedData.BankName</td>
+                                <td>@relatedData.CTdate</td>
+                                <td>@relatedData.Amount</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+
+        }
+        <div class="form-group">
+          
+            <button type="button" onclick="confirmSave()" class="btn btn-primary">تعديل</button>
+            <a class="btn btn-secondary" style="float:left" asp-action="Index">الرجوع الى القائمة الرئيسية</a>
+        </div>
+    </form>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

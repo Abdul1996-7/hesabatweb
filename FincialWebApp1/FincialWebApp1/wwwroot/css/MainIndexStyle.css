@@ -1,0 +1,44 @@
+﻿.no-display{
+    display:none!important;
+}
+table {
+    margin: 0 auto;
+}
+
+tbody tr,
+table tr:not(:last-child):not(:first-child) {
+    counter-increment: rowNumber;
+}
+
+    tbody tr td:first-child::before,
+    table tr:not(:last-child):not(:first-child) td:first-child::before {
+        content: counter(rowNumber);
+    }
+
+.table-container {
+    display: flex;
+}
+
+    .table-container table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    .table-container th,
+    .table-container td {
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+
+    .table-container h2 {
+        margin-bottom: 10px;
+    }
+
+.button-container form {
+    display: inline-block;
+    margin-right: 10px; /* Adjust the margin as needed */
+}
+.tr.no-counter td:first-child::before {
+    content: none;
+}
+

@@ -1,0 +1,242 @@
+﻿<html lang="en">
+@{
+    ViewData["Title"] = "Dashboard";
+}
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dash board Design Practice</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/" />
+    <link href="https://cdn.datatables.net/v/bs5/dt-1.13.4/datatables.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/BoostWatch.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- Head content... -->
+        <style>
+            /* Custom styles for the dashboard */
+            body {
+                background-color: #64CCC5;
+                font-family: 'Inter', sans-serif;
+            }
+
+            .dashboard-title {
+                font-size: 36px;
+                font-weight: bold;
+                color: white;
+                text-align: center;
+                padding: 20px 0;
+            }
+            .card {
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                overflow: hidden;
+                margin-bottom: 20px;
+            }
+
+            .card-header {
+                background-color: #343A40;
+                color: white;
+                font-size: 24px;
+                padding: 10px 20px;
+            }
+            .card-body {
+                padding: 20px;
+            }
+            .card-title {
+                font-size: 20px;
+                font-weight: bold;
+            }
+            .card-text {
+                font-size: 16px;
+                color: #555555;
+                margin-top: 10px;
+            }
+            .chart-container {
+                position: relative;
+                height: 400px;
+            }
+        </style>
+</head>
+
+<body >
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="https://cdn.datatables.net/v/bs5/dt-1.13.4/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/Script.js"></script>
+    <div class="container-fluid">
+
+  
+    <div class="row">
+        <div class="col-md-12 fw-bold fs-1">Dashboard </div>
+    </div>
+    <div class=" pt-3">
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <div class="card text-bg-info h-100">
+                        <div class="card-header text-end">
+                            <h4 class="card-title"> CTعدد ادخالات وحدة  </h4>
+                        </div>
+                        <div class="card-body text-center">
+                        <h5 class="card-text" style="font-size:50px;color: white;">@ViewBag.CTCount</h5>
+                            <p class="card-text"> CTsتم إضافة   </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card text-bg-warning h-100">
+                        <div class="card-header text-end">
+                            <h4 class="card-title">  ادخالات وحدةالقطع</h4>
+                        </div>
+                        <div class="card-body text-center">
+                        <h5 class="card-text" style="font-size:50px;color: white;"> @ViewBag.EditCount</h5>
+                            <p class="card-text"> تم القطع   </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card text-bg-secondary h-100">
+                        <div class="card-header text-end">
+                            <h4 class="card-title">عدد البيانات المكتملة</h4>
+                         </div>
+                        <div class="card-body text-center">
+                        <h5 class="card-text" style="font-size:50px;color: white;"> @ViewBag.FullFiledData</h5>
+                            <p class="card-text">  تم أكتمال    </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card text-bg-danger h-100">
+                        <div class="card-header text-end">
+                            <h4 class="card-title">عدد البيانات المحذوفة </h4>
+                        </div>
+                        <div class="card-body text-center">
+                        <h5 class="card-text" style="font-size:50px;color: white;"> @ViewBag.DelteCTcount</h5>
+                            <p class="card-text"> CTs تم حذف </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Charts
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Get the canvas element -->
+                        <canvas id="myChart"></canvas>
+
+                        <script>
+                            // Retrieve the data counts from ViewBag
+                            const dataCounts1 = @Html.Raw(Json.Serialize(ViewBag.DataCounts));
+                            const dataCountsNotcompleted1 = @Html.Raw(Json.Serialize(ViewBag.DataCountsNotcompleted));
+
+                            // Prepare the labels and datasets for the chart
+                            const labels1 = Object.keys(dataCounts1);
+                            const datasets1 = [{
+                                label: 'بيانات مكتملة',
+                                data: Object.values(dataCounts1),
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 0.6
+                            },
+                            {
+                                label: 'بيانات غير مكتملة',
+                                data: Object.values(dataCountsNotcompleted1),
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 0.6
+                            }];
+
+                            // Create the chart
+                            const ctx1 = document.getElementById('myChart').getContext('2d');
+                            const chart1 = new Chart(ctx1, {
+                                type: 'bar',
+                                data: {
+                                    labels: labels1,
+                                    datasets: datasets1
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        Charts
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Get the canvas element -->
+                        <canvas id="myChart2"></canvas>
+
+                        <script>
+                            // Retrieve the data counts from ViewBag
+                            const dataCounts2 = @Html.Raw(Json.Serialize(ViewBag.CTCountTotal));
+                            const dataCountsCutting2 = @Html.Raw(Json.Serialize(ViewBag.CTCountTotalCutting));
+
+                            // Prepare the labels and datasets for the chart
+                            const labels2 = Object.keys(dataCountsCutting2);
+                            const datasets2 = [{
+                                label: 'CT بيانات وحدة ال',
+                                data: Object.values(dataCounts2),
+                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 0.6
+                            },
+                            {
+                                label: 'بيانات وحدة القطع',
+                                data: Object.values(dataCountsCutting2),
+                                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 0.6
+                            }];
+
+                            // Create the chart
+                            const ctx2 = document.getElementById('myChart2').getContext('2d');
+                            const chart2 = new Chart(ctx2, {
+                                type: 'bar',
+                                data: {
+                                    labels: labels2,
+                                    datasets: datasets2
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true
+                                        }
+                                    }
+                                }
+                            });
+                        </script>
+                     </div>
+                 </div>
+              </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+

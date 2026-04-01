@@ -1,0 +1,30 @@
+﻿
+.table-container {
+    display: table;
+    width: 100%;
+    direction: rtl;
+    border-collapse: collapse;
+    border-spacing: 0;
+    overflow-x:auto;
+}
+
+    .table-container th {
+        text-align: center;
+        direction: rtl;
+        padding: 10px;
+        background-color: #526D82;
+        border: 1px solid #ccc;
+        border-color:black;
+        
+    }
+    .table-container td {
+        text-align: center;
+        direction: rtl;
+        padding: 10px;
+        border: 1px solid #ccc;
+        background-color: #DDE6ED;
+        border-color: black;
+    }
+.tr.no-counter td:first-child::before {
+    content: none;
+}

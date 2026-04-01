@@ -1,0 +1,24 @@
+﻿@model FinancialWebApp1.Models.BankList
+<link rel="stylesheet" href="~/css/Pagestyle.css" />
+
+@{
+    ViewData["Title"] = "حذف مصرف";
+}
+
+<h1 style="text-align:center">حذف مصرف</h1>
+
+<div style="direction:rtl">
+    <table class="table">
+        <tr>
+            <td>@Html.DisplayFor(model => model.Name)</td>
+        </tr>
+        
+    </table>
+
+    <form id="deleteForm" asp-action="Delete">
+        <input type="hidden" asp-for="BankListId" />
+        <button type="button" onclick="confirmDelete()" class="btn btn-danger">حذف</button>
+        <a class="btn btn-secondary" style="float:left" asp-action="Index">الرجوع الى القائمة الرئيسية</a>
+    </form>
+</div>
+

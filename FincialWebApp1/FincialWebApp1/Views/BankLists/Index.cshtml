@@ -1,0 +1,63 @@
+﻿@model IEnumerable<FinancialWebApp1.Models.BankList>
+
+
+<link rel="stylesheet" href="~/css/MainIndexStyle.css" />
+<link rel="stylesheet" href="~/css/TableStyle.Css" />
+<link rel="stylesheet" href="~/css/print.css" />
+<link rel="stylesheet" href="~/css/Site2.css" />
+
+@{
+    ViewData["Title"] = "المصارف";
+}
+
+
+<body style="background-color:#DDE6ED">
+
+
+    <h1 style="text-align:center">المصارف</h1>
+
+
+    <form style="margin-bottom:2%;margin-left:50%;float:right;">
+        <button class="no-print search-button-adding btn btn-warning" asp-action="Create"><i class="bi bi-bookmark-plus"></i>&nbsp;أضافة مصرف جديد</button>
+    </form>
+    <div style="height: 100%; width:100%;direction: rtl; text-align: left; overflow: auto;">
+        <table dir="rtl" class="tg onn-print-table">
+            <thead>
+                <tr>
+                    <th style="width:1%;background-color:lightsteelblue" class=" tg-sihp-print"> ت </th>
+                    <th style="width:15%;background-color:lightsteelblue" class=" tg-sihp-print">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th style="width:15%;background-color:lightsteelblue" class="tg-sihp-print"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                   if (item.Name != "لايوجد")
+    {
+        <tr>
+             <td style="width:1%;background-color:#F5EBE0" class="tg-sihp-print ">
+
+                        </td>
+            <td style="width:15%;background-color:#F5EBE0" class="tg-sihp-print">
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+
+            <td style="width:15%;background-color:#F5EBE0" class="tg-sihp-print">
+                <a asp-action="Edit" asp-route-id="@item.BankListId">تعديل</a> |
+                <a asp-action="Delete" asp-route-id="@item.BankListId">حذف</a>
+            </td>
+        </tr>
+    }
+                }
+                  <td style="width:1%;background-color:#F5EBE0" class="tg-sihp-print ">
+
+                        </td>
+                
+
+            </tbody>
+        </table>
+    </div>
+</body>
+

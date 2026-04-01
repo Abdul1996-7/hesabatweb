@@ -1,0 +1,195 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@inject SignInManager<IdentityUser> signInManager;
+@model IEnumerable<FinancialWebApp1.Models.Track>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@*<link rel="stylesheet" href="~/css/BoostWatch.css" />*@
+<link rel="stylesheet" href="~/css/MainIndexStyle.css" />
+<link rel="stylesheet" href="~/css/TableStyle.Css" />
+<link rel="stylesheet" href="~/css/print.css" />
+<link rel="stylesheet" href="~/css/Site2.css" />
+<div class="no-Display on-print">
+
+    <div style="text-align:center;font-weight: bold; font-size:50px "> حركة المستخدمين </div>
+   
+   
+</div>
+
+
+
+
+<div class="row justify-content-start mt-3 no-print">
+    <div class="col-md-12">
+        <form method="get" action="@Url.Action("Track")">
+            <div style="float:right">
+                <button class="btn btn-info" type="submit"><i class="bi bi-search"></i>بحث</button>
+            </div>
+
+            <div class="row">
+                <div class="col-md-3 mb-2">
+                    <input class="form-control" style="text-align:right;" type="text" name="SearchPreparationAuthority" placeholder="بحث عن جهة التجهيز" value="@ViewBag.SearchPreparationAuthority" />
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input class="form-control" style="text-align:right;" type="text" name="SearchBankName" placeholder="بحث عن اسم البنك" value="@ViewBag.SearchBankName" />
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input class="form-control" style="text-align:right;" type="text" name="SearchCTNum" placeholder="بحث عن رقم ال (CT)" value="@ViewBag.SearchCTNum" />
+                </div>
+                <div class="col-md-3 mb-2">
+                    <input class="form-control" style="text-align:right;" type="text" name="SearchDepotName" placeholder="بحث عن اسم المستودع " value="@ViewBag.SearchDepotName" />
+                </div>
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; float:right">
+                    @Html.TextBox("endDate", ViewBag.EndDate as string, new { @type = "date", style = "width: 150px; margin-right: 10px; border: 2px solid #ddd; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);", placeholder = "الى تاريخ " + (ViewBag.SearchCTDate ?? string.Empty) })
+                    <label for="endDate" style="margin-right: 10px; font-weight: bold; color: #333;">: الى تاريخ</label>
+
+                    @Html.TextBox("startDate", ViewBag.StartDate as string, new { @type = "date", style = "width: 150px; margin-right: 10px; border: 2px solid #ddd; padding: 5px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);", placeholder = "من تاريخ " + (ViewBag.SearchCTDate ?? string.Empty) })
+                    <label for="startDate" style="margin-right: 10px; font-weight: bold; color: #333;">: من تاريخ</label>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+         
+
+        
+>
+
+<div class="tg-sihp-printon-print print-onpaper " style="height: 100%; width:100%;direction: rtl; text-align: left; overflow: auto;">
+    <table class="table-container tg-sihp-printon-print ">
+        <thead>
+            <tr>
+                <th class=" tg-sihp-print">
+                    ت
+                </th>
+                <th class=" tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.DepotName)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.CTnumber)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.CTdate)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.BankName)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.Amount)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.PreparationAuthority)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.DateOfAddingbyCutterEmployer)
+                </th>
+
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.Import)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.Stamps)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.TransportationLoads)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.cheackNumber)
+                </th>
+                <th class="tg-sihp-print">
+                    @Html.DisplayNameFor(model => model.cheackDate)
+                </th>
+
+                <th class="no-print">
+                    @Html.DisplayNameFor(model => model.WhoEdit)
+                </th>
+                <th class="no-print">
+                    @Html.DisplayNameFor(model => model.DateOfEdit)
+                </th>
+                <th class="no-print">
+                    @Html.DisplayNameFor(model => model.CreatedBy)
+                </th>
+                <th class="no-print">
+                    @Html.DisplayNameFor(model => model.DateCreated)
+                </th>
+
+                <th class="no-print" style="color:white"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.DepotName)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.CTnumber)
+                    </td>
+                    <td class="tg-sihp-printt">
+                        @Html.DisplayFor(modelItem => item.CTdate)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.BankName)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.Amount)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.PreparationAuthority)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.DateOfAddingbyCutterEmployer)
+                    </td>
+
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.Import)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.Stamps)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.TransportationLoads)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.cheackNumber)
+                    </td>
+                    <td class="tg-sihp-print">
+                        @Html.DisplayFor(modelItem => item.cheackDate)
+                    </td>
+
+                    <td class="no-print">
+                        @Html.DisplayFor(modelItem => item.WhoEdit)
+                    </td>
+                    <td class="no-print">
+                        @Html.DisplayFor(modelItem => item.DateOfEdit)
+                    </td>
+                    <td class="no-print">
+                        @Html.DisplayFor(modelItem => item.CreatedBy)
+                    </td>
+                    <td class="no-print">
+                        @Html.DisplayFor(modelItem => item.DateCreated)
+                    </td>
+
+                    <td>
+                        @if (signInManager.IsSignedIn(User) && (User.IsInRole("Super Admin")))
+                        {
+                            <form asp-action="Delete" asp-route-id="@item.Id" method="get">
+                                <button type="submit" class="btn btn-danger">حذف</button>
+                            </form>
+                        }
+                        
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
